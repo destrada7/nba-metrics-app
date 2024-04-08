@@ -13,7 +13,7 @@ const DataFetcher = () => {
       setLoading(true); // Set loading state to true while fetching data
       try {
         const response = await fetch(
-          `http://localhost:3000/api/players?page=${currentPage}&limit=100`
+          `https://nba-metrics-server.vercel.app/api/players?page=${currentPage}&limit=100`
         );
         const jsonData = await response.json();
         setData(jsonData.players);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Tooltip } from 'react-tooltip';
-import ReactDOMServer from 'react-dom/server';
 
 const DataFetcher = () => {
   const [data, setData] = useState([]);
@@ -13,7 +12,7 @@ const DataFetcher = () => {
       setLoading(true); // Set loading state to true while fetching data
       try {
         const response = await fetch(
-          `https://nba-metrics-server.vercel.app/api/players?page=${currentPage}&limit=100`
+          `http://localhost:3001/api/players?page=${currentPage}&limit=100`
         );
         const jsonData = await response.json();
         setData(jsonData.players);
@@ -36,43 +35,40 @@ const DataFetcher = () => {
   };
 
   const getToolTipContent = (item) => {
-    const jsxContent = (
+    return (
       <div>
         <ul>
+          <li>
+            <span>Jugador: </span>
+            <span>{item.Jugador}</span>
+          </li>
+          <li>
+            <span>Equipo: </span>
+            <span>{item.Equipo}</span>
+          </li>
+          <li>
+            <span>Arquetipo Ofensivo: </span>
+            <span>{item['Arquetipo Ofensivo']}</span>
+          </li>
+          <li>
+            <span>Arquetipo Defensivo: </span>
+            <span>{item['Arquetipo Defensivo']}</span>
+          </li>
+          <li>
+            <span>POISE Ofensivo: </span>
+            <span>{item['POISE Ofensivo']}</span>
+          </li>
+          <li>
+            <span>POISE Defensivo: </span>
+            <span>{item['POISE Defensivo']}</span>
+          </li>
           <li>
             <span>POISE Total: </span>
             <span>{item['POISE Total']}</span>
           </li>
-          <li>
-            <span>Valor Scoring: </span>
-            <span>{item['Valor Scoring']}</span>
-          </li>
-          <li>
-            <span>Valor Spacing: </span>
-            <span>{item['Valor Spacing']}</span>
-          </li>
-
-          <li>
-            <span>Valor Passing: </span>
-            <span>{item['Valor Passing']}</span>
-          </li>
-
-          <li>
-            <span>Valor Rim Protection: </span>
-            <span>{item['Valor Rim Protection']}</span>
-          </li>
-
-          <li>
-            <span>Valor Rebounding: </span>
-            <span>{item['Valor Rebounding']}</span>
-          </li>
         </ul>
       </div>
     );
-
-    const htmlString = ReactDOMServer.renderToString(jsxContent);
-
-    return htmlString;
   };
 
   return (
@@ -97,6 +93,7 @@ const DataFetcher = () => {
                   <th className="p-2 border border-gray-300">
                     POISE Defensivo
                   </th>
+                  <th className="p-2 border border-gray-300">POISE Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -104,45 +101,45 @@ const DataFetcher = () => {
                   <tr key={index} className="bg-white">
                     <td
                       className="p-2 border border-gray-300"
-                      data-tooltip-id="my-tooltip-inline"
-                      data-tooltip-html={`${getToolTipContent(item)}`}
+                      data-tooltip-id={`my-tooltip-inline-${index}`}
                     >
                       {item.Jugador}
                     </td>
                     <td
                       className="p-2 border border-gray-300"
-                      data-tooltip-id="my-tooltip-inline"
-                      data-tooltip-html={getToolTipContent(item)}
+                      data-tooltip-id={`my-tooltip-inline-${index}`}
                     >
                       {item.Equipo}
                     </td>
                     <td
                       className="p-2 border border-gray-300"
-                      data-tooltip-id="my-tooltip-inline"
-                      data-tooltip-html={getToolTipContent(item)}
+                      data-tooltip-id={`my-tooltip-inline-${index}`}
                     >
                       {item['Arquetipo Ofensivo']}
                     </td>
                     <td
                       className="p-2 border border-gray-300"
-                      data-tooltip-id="my-tooltip-inline"
-                      data-tooltip-html={getToolTipContent(item)}
+                      data-tooltip-id={`my-tooltip-inline-${index}`}
                     >
                       {item['Arquetipo Defensivo']}
                     </td>
                     <td
                       className="p-2 border border-gray-300"
-                      data-tooltip-id="my-tooltip-inline"
-                      data-tooltip-html={getToolTipContent(item)}
+                      data-tooltip-id={`my-tooltip-inline-${index}`}
                     >
                       {item['POISE Ofensivo']}
                     </td>
                     <td
                       className="p-2 border border-gray-300"
-                      data-tooltip-id="my-tooltip-inline"
-                      data-tooltip-html={getToolTipContent(item)}
+                      data-tooltip-id={`my-tooltip-inline-${index}`}
                     >
                       {item['POISE Defensivo']}
+                    </td>
+                    <td
+                      className="p-2 border border-gray-300"
+                      data-tooltip-id={`my-tooltip-inline-${index}`}
+                    >
+                      {item['POISE Total']}
                     </td>
                   </tr>
                 ))}
@@ -170,10 +167,15 @@ const DataFetcher = () => {
           </>
         )}
       </div>
-      <Tooltip
-        id="my-tooltip-inline"
-        style={{ backgroundColor: 'purple', color: '#FFF' }}
-      />
+      {data.map((item, index) => (
+        <Tooltip
+          key={index}
+          id={`my-tooltip-inline-${index}`}
+          style={{ backgroundColor: 'purple', color: '#FFF' }}
+        >
+          {getToolTipContent(item)}
+        </Tooltip>
+      ))}
     </div>
   );
 };
